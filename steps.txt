@@ -1,0 +1,183 @@
+OPENSTACK CONTRIBUTIONS ENV SETUP IN WINDOWS7
+=============================================
+I already had Python3 installed my Windows.
+
+1.Download and Install Git in Windows7 (https://git-scm.com/download/win)
+Pointers:
+https://blogs.msdn.microsoft.com/kristol/2013/07/02/the-git-command-line-101-for-windows-users/
+https://git-scm.com/
+
+During installation select,
+-use git from git bash only
+-use openssh
+-use openssl library
+-checkout windows-style
+Rest all default settings.
+
+2.Open Git Bash:
+
+$ git version
+git version 2.14.0.windows.2
+
+$ pwd
+/c/Users/praveenna
+
+create a new folder for your work and cd into it.
+$ pwd
+/c/Users/praveenna/openstack_git_repos
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ ssh-keygen
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ cat /c/Users/praveenna/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwXyWjp5NEf+ko+8dA9ABF9tqZy/gOLKHc6YOPxVQcYzVqAc11eW2vTRYt5BPOvG/P5lMeqse9LM371vJYQhsyhFkS9fsTTu7zppCUfCz9tCj35sde1g5Nj3zcDX6W6l+6jZiP9UoLM5zGGcHnutGS3OAiFKp1zvJAaIrNgqHlKh7LsZ4wZHRHdsmw47BE3ZB+gta31eWaiJ5pKTXlNr8uV1kSGCM2XSy00QaYbuLemP2q0pOInO784n67pQaKTPN1wQgJhuMe1Ivqm8N55iYvbX/bcIfSijbcJul2XfhhVZba8bJNCVq5/6jLJujstyu31qpRqnIHKFNq/kCtv5RD praveenna@NOD011018489
+
+Copy this public key and paste in your account.[https://review.openstack.org/#/settings/ssh-keys]
+
+$ git clone https://github.com/openstack/glance.git
+Cloning into 'glance'...
+fatal: unable to access 'https://github.com/openstack/glance.git/': SSL certificate problem: self signed certificate in certificate chain
+
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ git config -l
+core.symlinks=false
+core.autocrlf=true
+core.fscache=true
+color.diff=auto
+color.status=auto
+color.branch=auto
+color.interactive=true
+help.format=html
+rebase.autosquash=true
+http.sslcainfo=C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt
+http.sslbackend=openssl
+diff.astextplain.textconv=astextplain
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.required=true
+filter.lfs.process=git-lfs filter-process
+credential.helper=manager
+
+$ git config --global http.sslVerify false
+
+$ git config -l
+core.symlinks=false
+core.autocrlf=true
+core.fscache=true
+color.diff=auto
+color.status=auto
+color.branch=auto
+color.interactive=true
+help.format=html
+rebase.autosquash=true
+http.sslcainfo=C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt
+http.sslbackend=openssl
+diff.astextplain.textconv=astextplain
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.required=true
+filter.lfs.process=git-lfs filter-process
+credential.helper=manager
+http.sslverify=false
+
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos/glance (typo)
+$ pip install git-review
+Collecting git-review
+  Could not fetch URL https://pypi.python.org/simple/git-review/: There was a problem confirming the ssl certificate: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:749) - skipping
+  Could not find a version that satisfies the requirement git-review (from versions: )
+No matching distribution found for git-review
+
+Then this worked:) https://stackoverflow.com/questions/25981703/pip-install-fails-with-connection-error-ssl-certificate-verify-failed-certi
+pip install --trusted-host pypi.python.org git-review
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ git clone https://github.com/openstack/glance.git
+Cloning into 'glance'...
+
+remote: Counting objects: 53980, done.
+remote: Compressing objects: 100% (26/26), done.
+remote: Total 53980 (delta 2), reused 10 (delta 1), pack-reused 53951
+Receiving objects: 100% (53980/53980), 25.39 MiB | 398.00 KiB/s, done.
+Resolving deltas: 100% (36518/36518), done.
+Checking out files: 100% (713/713), done.
+
+$ cd glance/
+
+$ git branch
+* master
+
+$ git checkout -b typo
+Switched to a new branch 'typo'
+
+$ vim etc/glance-api.conf
+provide your fix/patch
+
+$ git diff
+verify the changes made
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ git config --global user.name npraveen35
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ git config --global user.email npraveen35@gmail.com
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos
+$ git config --global gitreview.username praveen
+
+
+$ git commit -a
+[typo 00ce4565] trivial typo fix
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+
+praveenna@NOD011018489 MINGW64 ~/openstack_git_repos/glance (typo)
+$ git config -l
+core.symlinks=false
+core.autocrlf=true
+core.fscache=true
+color.diff=auto
+color.status=auto
+color.branch=auto
+color.interactive=true
+help.format=html
+rebase.autosquash=true
+http.sslcainfo=C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt
+http.sslbackend=openssl
+diff.astextplain.textconv=astextplain
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.required=true
+filter.lfs.process=git-lfs filter-process
+credential.helper=manager
+http.sslverify=false
+user.name=npraveen35
+user.email=npraveen35@gmail.com
+gitreview.username=praveen
+core.repositoryformatversion=0
+core.filemode=false
+core.bare=false
+core.logallrefupdates=true
+core.symlinks=false
+core.ignorecase=true
+remote.origin.url=https://github.com/openstack/glance.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.master.remote=origin
+branch.master.merge=refs/heads/master
+
+
+
+$ git review
+Creating a git remote called "gerrit" that maps to:
+        ssh://praveen@review.openstack.org:29418/openstack/glance.git
+Your change was committed before the commit hook was installed.
+Amending the commit to add a gerrit change id.
+remote: Processing changes: new: 1, refs: 1, done
+remote:
+remote: New Changes:
+remote:   https://review.openstack.org/491998 trivial typo fix
+remote:
+To ssh://review.openstack.org:29418/openstack/glance.git
+ * [new branch]        HEAD -> refs/publish/master/typo
